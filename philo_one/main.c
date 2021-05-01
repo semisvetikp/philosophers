@@ -6,7 +6,7 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 14:33:05 by jradioac          #+#    #+#             */
-/*   Updated: 2021/04/29 00:29:05 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/02 00:19:26 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,22 @@
 
 int	main(int argc, char **argv)
 {
+	t_table	table;
+	t_philo	**philos;
 
 	if (handling_error(argc, argv))
 		return (1);
-	init(argv);
-	if (argc == 5)
-	{
-		printf("OK\n");
-		return (0);
-	}
-	else if (argc == 6)
-	{
-		printf("OK\n");
-		return (0);
-	}
+	philos = init(argv, &table);
+	// create(table, philos);
+	// if (argc == 5)
+	// {
+	// 	printf("OK\n");
+	// 	return (0);
+	// }
+	// else if (argc == 6)
+	// {
+	// 	printf("OK\n");
+	// 	return (0);
+	// }
+	return(0);
 }
