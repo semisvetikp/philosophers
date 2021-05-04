@@ -6,7 +6,7 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 20:24:56 by jradioac          #+#    #+#             */
-/*   Updated: 2021/04/28 20:27:42 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/05 01:52:18 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handling_error(int argc, char **argv)
 	i = 1;
 	if (argc != 5 && argc != 6)
 	{
-		printf("Error number of arguments.\n");
+		write(2, "Error number of arguments.\n", 27);
 		return (1);
 	}
 	while (argv[i] != NULL)
@@ -30,7 +30,7 @@ int	handling_error(int argc, char **argv)
 		{
 			if (argv[i][k] > 57 || argv[i][k] < 48)
 			{
-				printf("Invalid arguments.\n");
+				write(2, "Invalid arguments.\n", 19);
 				return (1);
 			}
 			k++;
@@ -76,4 +76,44 @@ int	ft_atoi(const char *str)
 			return (ft_p(flag));
 	}
 	return (res * flag);
+}
+
+void	mysleep(int time)
+{
+	int				time1;
+	int				time2;
+	struct timeval	tv;
+	struct timezone	tz;
+	int				t;
+
+	t = 0;
+	gettimeofday(&tv, &tz);
+	time1 = (tv.tv_sec *1000000 + tv.tv_usec) / 1000;
+	while (t < (time))
+	{
+		usleep(50);
+		gettimeofday(&tv, &tz);
+		time2 = (tv.tv_sec *1000000 + tv.tv_usec) / 1000;
+		t = time2 - time1;
+	}
+}
+
+void	print(t_table *table, t_philo *philo, int a)
+{
+	struct timeval	tv;
+	int				time;
+
+	pthread_mutex_lock(&table->print);
+	gettimeofday(&tv, NULL);
+	time = (tv.tv_sec *1000000 + tv.tv_usec) / 1000 - table->tstart;
+	if (a == 1)
+	{
+		printf("%d %d has taken a fork\n", time, philo->number);
+		printf("%d %d is eating\n", time, philo->number);
+	}
+	if (a == 2)
+		printf("%d %d is sleeping\n", time, philo->number);
+	if (a == 3)
+		printf("%d %d is thinking\n", time, philo->number);
+	pthread_mutex_unlock(&table->print);
 }
