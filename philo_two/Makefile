@@ -1,12 +1,12 @@
-HEADER = philo_one.h
-SRCS	=  main.c utils.c philo_one.c
+HEADER = philo_two.h
+SRCS	=  main.c utils.c philo_two.c
 
 GCC		= gcc
 FLAGS	= -Wall -Wextra -Werror
 
 OBJ = $(SRCS:.c=.o)
 
-NAME = philo_one
+NAME = philo_two
 
 RM   =  rm -f
 
