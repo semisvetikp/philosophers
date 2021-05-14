@@ -1,5 +1,5 @@
 HEADER = philo_three.h
-SRCS	=  main.c utils.c philo_three.c
+SRCS	=  main.c utils.c philo_three.c lib_func.c
 
 GCC		= gcc
 FLAGS	= -Wall -Wextra -Werror

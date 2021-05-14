@@ -1,5 +1,5 @@
 HEADER = philo_two.h
-SRCS	=  main.c utils.c philo_two.c
+SRCS	=  main.c utils.c philo_two.c lib_func.c
 
 GCC		= gcc
 FLAGS	= -Wall -Wextra -Werror

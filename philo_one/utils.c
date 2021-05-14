@@ -6,24 +6,42 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 20:24:56 by jradioac          #+#    #+#             */
-/*   Updated: 2021/05/05 01:52:18 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/15 00:22:22 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+int	zero_param(char **argv)
+{
+	int	a;
+	int	i;
+
+	i = 0;
+	while (argv[++i] != NULL)
+	{
+		a = ft_atoi(argv[i]);
+		if (a == 0 )
+		{
+			write(2, "Invalid arguments: zero\n", 24);
+			return (1);
+		}
+	}
+	return (0);
+}
 
 int	handling_error(int argc, char **argv)
 {
 	int	i;
 	int	k;
 
-	i = 1;
+	i = 0;
 	if (argc != 5 && argc != 6)
 	{
 		write(2, "Error number of arguments.\n", 27);
 		return (1);
 	}
-	while (argv[i] != NULL)
+	while (argv[++i] != NULL)
 	{
 		k = 0;
 		while (argv[i][k])
@@ -35,30 +53,17 @@ int	handling_error(int argc, char **argv)
 			}
 			k++;
 		}
-		i++;
 	}
 	return (0);
-}
-
-static int	ft_p(int flag)
-{
-	if (flag == -1)
-		return (0);
-	else if (flag == 1)
-		return (-1);
-	else
-		return (0);
 }
 
 int	ft_atoi(const char *str)
 {
 	int	flag;
 	int	res;
-	int	p;
 
 	flag = 1;
 	res = 0;
-	p = 0;
 	while ((*str == ' ') || (*str > 8 && *str < 14))
 		str++;
 	if (*str == '-' || *str == '+')
@@ -70,50 +75,46 @@ int	ft_atoi(const char *str)
 	while (*str >= '0' && *str <= '9')
 	{
 		res = res * 10 + *str - '0';
-		p++;
 		str++;
-		if (p > 19)
-			return (ft_p(flag));
 	}
 	return (res * flag);
 }
 
-void	mysleep(int time)
+void	mysleep(int time, t_philo *ph)
 {
-	int				time1;
-	int				time2;
-	struct timeval	tv;
-	struct timezone	tz;
-	int				t;
-
-	t = 0;
-	gettimeofday(&tv, &tz);
-	time1 = (tv.tv_sec *1000000 + tv.tv_usec) / 1000;
-	while (t < (time))
+	ph->t_slp = 0;
+	gettimeofday(&ph->tv, NULL);
+	ph->time1_slp = (ph->tv.tv_sec *1000000 + ph->tv.tv_usec) / 1000;
+	while (ph->t_slp < (time))
 	{
 		usleep(50);
-		gettimeofday(&tv, &tz);
-		time2 = (tv.tv_sec *1000000 + tv.tv_usec) / 1000;
-		t = time2 - time1;
+		gettimeofday(&ph->tv, NULL);
+		ph->time2_slp = (ph->tv.tv_sec *1000000 + ph->tv.tv_usec) / 1000;
+		ph->t_slp = ph->time2_slp - ph->time1_slp;
 	}
 }
 
-void	print(t_table *table, t_philo *philo, int a)
+void	print(t_table *table, t_philo *ph, int a)
 {
-	struct timeval	tv;
-	int				time;
-
 	pthread_mutex_lock(&table->print);
-	gettimeofday(&tv, NULL);
-	time = (tv.tv_sec *1000000 + tv.tv_usec) / 1000 - table->tstart;
+	if (table->flag == 0 && a != 4)
+	{
+		pthread_mutex_unlock(&table->print);
+		return ;
+	}
+	gettimeofday(&ph->tvp, NULL);
+	ph->time_prnt = (ph->tvp.tv_sec *1000000 + ph->tvp.tv_usec)
+		/ 1000 - table->tstart;
 	if (a == 1)
 	{
-		printf("%d %d has taken a fork\n", time, philo->number);
-		printf("%d %d is eating\n", time, philo->number);
+		printf("%d %d has taken a fork\n", ph->time_prnt, ph->number);
+		printf("%d %d is eating\n", ph->time_prnt, ph->number);
 	}
-	if (a == 2)
-		printf("%d %d is sleeping\n", time, philo->number);
-	if (a == 3)
-		printf("%d %d is thinking\n", time, philo->number);
+	else if (a == 2)
+		printf("%d %d is sleeping\n", ph->time_prnt, ph->number);
+	else if (a == 3)
+		printf("%d %d is thinking\n", ph->time_prnt, ph->number);
+	else if (a == 4)
+		printf("%d %d died\n", table->timed, ph->number);
 	pthread_mutex_unlock(&table->print);
 }

@@ -6,20 +6,18 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 15:28:03 by jradioac          #+#    #+#             */
-/*   Updated: 2021/05/08 13:26:29 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/13 21:51:39 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_three.h"
 
-t_philo	**init_philosophers(char **argv, t_table *table)
+t_philo	**init_philosophers(char **argv, t_table *table, int number)
 {
 	int		i;
-	int		number;
 	t_philo	**philos;
 
 	i = 0;
-	number = ft_atoi(argv[1]);
 	philos = malloc(sizeof(t_philo *) * number);
 	if (philos == NULL)
 		return (NULL);
@@ -34,6 +32,9 @@ t_philo	**init_philosophers(char **argv, t_table *table)
 		if (argv[5] != NULL)
 			philos[i]->cnteat = ft_atoi(argv[5]);
 		philos[i]->ate = 0;
+		philos[i]->semeat_name = ft_itoa(philos[i]->number);
+		sem_unlink(philos[i]->semeat_name);
+		philos[i]->semeat = sem_open(philos[i]->semeat_name, O_CREAT, 0666, 1);
 		++i;
 	}
 	return (philos);
@@ -52,7 +53,7 @@ t_philo	**init_table(char **argv, t_table *table)
 	table->teat = ft_atoi(argv[3]);
 	table->tsleep = ft_atoi(argv[4]);
 	table->cnt_ate_philo = 0;
-	philos = init_philosophers(argv, table);
+	philos = init_philosophers(argv, table, number);
 	table->pids = malloc(sizeof(pid_t) * number);
 	return (philos);
 }
@@ -62,7 +63,7 @@ int	main(int argc, char **argv)
 	t_table	table;
 	t_philo	**philos;
 
-	if (handling_error(argc, argv))
+	if (handling_error(argc, argv) || zero_param(argv))
 		return (1);
 	philos = init_table(argv, &table);
 	if (philos == NULL)

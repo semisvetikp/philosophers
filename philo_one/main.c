@@ -6,7 +6,7 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 14:33:05 by jradioac          #+#    #+#             */
-/*   Updated: 2021/05/05 02:33:50 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/15 00:31:23 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ t_philo	**init_philosophers(char **argv, t_table *table)
 	int		number;
 	t_philo	**philos;
 
-	i = 0;
+	i = -1;
 	number = ft_atoi(argv[1]);
 	philos = malloc(sizeof(t_philo *) * number);
 	if (philos == NULL)
 		return (NULL);
-	while (i < number)
+	while (++i < number)
 	{
 		philos[i] = malloc(sizeof(t_philo));
 		if (philos[i] == NULL)
@@ -37,8 +37,9 @@ t_philo	**init_philosophers(char **argv, t_table *table)
 		if (argv[5] != NULL)
 			philos[i]->cnteat = ft_atoi(argv[5]);
 		philos[i]->ate = 0;
-		++i;
+		pthread_mutex_init(&philos[i]->eat, NULL);
 	}
+	table->flag = 1;
 	return (philos);
 }
 
@@ -75,7 +76,7 @@ int	main(int argc, char **argv)
 	t_table	table;
 	t_philo	**philos;
 
-	if (handling_error(argc, argv))
+	if (handling_error(argc, argv) || zero_param(argv))
 		return (1);
 	philos = init_table(argv, &table);
 	if (philos == NULL)
