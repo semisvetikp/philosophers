@@ -6,7 +6,7 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 23:34:51 by jradioac          #+#    #+#             */
-/*   Updated: 2021/05/15 00:51:24 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/15 12:15:24 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	create(t_table *table, t_philo **philos)
 {
 	int				i;
 	struct timeval	tv;
+	int				ret;
 
 	i = -1;
 	pthread_mutex_init(&table->print, NULL);
@@ -96,7 +97,9 @@ int	create(t_table *table, t_philo **philos)
 	table->tstart = (tv.tv_sec *1000000 + tv.tv_usec) / 1000;
 	while (++i < table->forks)
 	{
-		pthread_create(&(philos[i]->t), NULL, doit, (void *)philos[i]);
+		ret = pthread_create(&(philos[i]->t), NULL, doit, (void *)philos[i]);
+		if (ret != 0)
+			return (1);
 		usleep(10);
 	}
 	look_timedie(table, philos);

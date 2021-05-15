@@ -6,7 +6,7 @@
 /*   By: jradioac <jradioac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 15:30:48 by jradioac          #+#    #+#             */
-/*   Updated: 2021/05/15 01:24:32 by jradioac         ###   ########.fr       */
+/*   Updated: 2021/05/15 13:00:26 by jradioac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	*doit(void *phil)
 		if (ph->ate == ph->cnteat)
 		{
 			ph->tstarteat = -1;
+			sem_post(ph->phtable->semprint);
 			exit(0);
 		}
 		print(ph->phtable, ph, 2);
@@ -97,6 +98,7 @@ int	waitdie(t_table *table)
 		if (table->cnt_ate_philo == table->forks)
 			return (0);
 	}
+	return (0);
 }
 
 int	create(t_table *table, t_philo **philos)
